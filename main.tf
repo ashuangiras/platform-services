@@ -10,5 +10,6 @@ module "observability" {
   prometheus_port        = var.prometheus_port
   grafana_port           = var.grafana_port
   grafana_admin_password = var.grafana_admin_password
+  grafana_oidc_config    = var.grafana_oidc_config
   environment            = var.environment
 }
