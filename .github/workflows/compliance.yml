@@ -1,7 +1,7 @@
 name: "Compliance: Merge Gate"
 
 # Runs the platform-compliance governance pipeline on every PR and push.
-# Calls the reusable workflow from platform-compliance pinned to v3.3.4.
+# Calls the reusable workflow from platform-compliance pinned to v4.0.0.
 # Required for branch protection — the "Compliance: Merge Gate" status check must pass.
 
 on:
