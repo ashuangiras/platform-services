@@ -52,6 +52,13 @@ data:
   sensitivity: low         # Metrics are not secret data
 
 slo:
-  # REL-001 (future): SLO targets to be defined when REL controls are active
+  # REL-001: SLO targets (measurement window: rolling 30 days)
   availability_target: 99.0%
-  note: "SLO formal definition deferred to PC-0157 (REL-001 activation)"
+  sli: "HTTP /-/healthy returns 200 within 10s"
+  measurement_window: 30d
+
+  error_budget_policy:
+    # REL-002: what happens when the error budget is consumed
+    at_50_percent: "Investigate degradation cause; review scrape config and storage pressure"
+    at_100_percent: "Freeze non-emergency changes to Prometheus config; page on-call"
+    rationale: "Prometheus is a platform dependency — all services lose observability if it degrades"

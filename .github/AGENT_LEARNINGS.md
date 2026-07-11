@@ -19,3 +19,15 @@ Add a new dated entry at the top for each change.
 - **SUP-004**: Added release workflow with Syft SBOM generation (`anchore/sbom-action`). Every service release now produces a `sbom.cdx.json` artifact attached to the release.
 
 **Rule learned:** Policy failures that are "not in the merge gate" still appear in every CI run as noise. Fix them early — they are cheap to address and make the output meaningful rather than a wall of known-bad items to ignore.
+
+---
+
+## 2026-07-11 — feat: add SLI/SLO targets and error budget policies to service contracts (PC-0157)
+
+**Change Record:** CHG-20260711-051
+
+- **REL-001 (Prometheus)**: SLO target 99.0% availability; SLI = `/-/healthy` HTTP 200 within 10s over 30-day window
+- **REL-001 (Grafana)**: SLO target 99.0% availability; SLI = `/api/health` HTTP 200 within 5s over 30-day window
+- **REL-002**: Error budget policies defined for both services with explicit 50% and 100% consumption actions
+
+**Rule learned:** SLO targets in service contracts should be set at service inception, not deferred. The "TBD" placeholder creates compliance debt that is harder to clear later (the team has to agree on targets retroactively). Define the target when you first understand the service's reliability requirements.

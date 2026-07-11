@@ -52,5 +52,13 @@ data:
   sensitivity: medium      # Admin credentials stored in SQLite; protect with filesystem permissions
 
 slo:
+  # REL-001: SLO targets (measurement window: rolling 30 days)
   availability_target: 99.0%
-  note: "SLO formal definition deferred to PC-0157 (REL-001 activation)"
+  sli: "HTTP /api/health returns 200 within 5s"
+  measurement_window: 30d
+
+  error_budget_policy:
+    # REL-002: what happens when the error budget is consumed
+    at_50_percent: "Review resource allocation and datasource connectivity; check Prometheus health"
+    at_100_percent: "Freeze dashboard changes; investigate root cause before next update"
+    rationale: "Grafana is the operator visibility layer — degradation impairs incident response"
