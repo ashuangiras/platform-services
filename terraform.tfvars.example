@@ -1,0 +1,13 @@
+# terraform.tfvars.example
+# Copy to terraform.tfvars — never commit it.
+
+# Grafana admin password — inject from Vault for production
+# grafana_admin_password = "change-me"
+
+# Host paths (create before terraform apply)
+# sudo mkdir -p /srv/platform/prometheus/{data,config} /srv/platform/grafana/data
+# sudo chown -R 65534:65534 /srv/platform/prometheus/data
+# sudo chown 65534:65534 /srv/platform/prometheus/config  # or root for config dir
+# sudo chown -R 472:472 /srv/platform/grafana/data
+
+# Copy prometheus.yml.example to /srv/platform/prometheus/config/prometheus.yml

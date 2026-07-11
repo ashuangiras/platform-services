@@ -1,0 +1,57 @@
+schema_version: "1.0.0"
+
+# Service Contract — Prometheus
+# Governed by platform-compliance; PROF-SERVICE-V1
+# Required by CAT-001: every service must be registered with a service contract.
+
+service:
+  id: prometheus
+  name: Prometheus
+  version: "3.0.1"
+  description: >
+    Platform metrics collection and alerting engine. Scrapes metrics from all
+    platform services and stores them in a local TSDB. Provides the data source
+    for Grafana dashboards and the measurement basis for SLO calculations (REL-001).
+  owner: platform-team
+  repository: https://github.com/ashuangiras/platform-services
+  component: observability
+
+runtime:
+  type: docker-container
+  image: prom/prometheus:v3.0.1
+  network: platform-backend
+  runs_as_non_root: true     # UID 65534 (nobody)
+  read_only_rootfs: false    # TSDB requires write access to /prometheus
+
+health:
+  # OBS-001: service must expose a health check endpoint
+  endpoint: "/-/healthy"
+  port: 9090
+  method: GET
+  expected_status: 200
+  interval: 30s
+
+dependencies:
+  # CAT-002: service dependencies must be declared
+  - service: platform-consul
+    type: optional
+    purpose: "Service discovery for dynamic scrape target registration"
+  - service: platform-vault
+    type: optional
+    purpose: "Metrics token injection for authenticated Vault scraping"
+
+ports:
+  - port: 9090
+    protocol: http
+    purpose: "Prometheus API, query interface, and web UI"
+
+data:
+  persistent_storage: true
+  data_path: "/srv/platform/prometheus/data"
+  backup_required: false   # TSDB is regenerated from scrape targets; loss is acceptable
+  sensitivity: low         # Metrics are not secret data
+
+slo:
+  # REL-001 (future): SLO targets to be defined when REL controls are active
+  availability_target: 99.0%
+  note: "SLO formal definition deferred to PC-0157 (REL-001 activation)"

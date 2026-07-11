@@ -1,0 +1,58 @@
+name: "Terraform Plan (IAC-002)"
+
+# Validates Terraform configuration on every PR.
+# Full terraform plan requires live infrastructure (Docker + MinIO backend).
+# This workflow covers the CI portion: fmt, init (no backend), validate.
+# Include plan output in the PR description (IAC-002 plan-before-apply).
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  validate:
+    name: "IAC-002 — Validate Terraform configuration"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "~1.9"
+
+      - name: Terraform format check
+        run: terraform fmt -check -recursive .
+
+      - name: Terraform init (no backend)
+        run: terraform init -backend=false
+
+      - name: Terraform validate
+        run: terraform validate
+
+      - name: Check PR description contains plan output
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = context.payload.pull_request.body || '';
+            const hasPlan = body.includes('terraform plan') ||
+                            body.includes('Plan:') ||
+                            body.includes('No changes.');
+            if (!hasPlan) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: '## ⚠️ IAC-002 — No plan output found in PR description\n\nRun `terraform plan` locally and paste the output into this PR before merging.',
+              });
+              core.warning('IAC-002: PR description does not contain terraform plan output');
+            }
