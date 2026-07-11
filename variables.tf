@@ -51,3 +51,22 @@ variable "environment" {
   type        = string
   default     = "production"
 }
+
+# ── Grafana OIDC (RUN-009b) ────────────────────────────────────────────────────
+variable "grafana_oidc_config" {
+  description = <<-EOT
+    Authentik OIDC config for Grafana. Read from Vault at secret/platform/oidc/grafana
+    after platform-infrastructure integrations/ runs. Set to null in pre-integration
+    deployments.
+  EOT
+  type = object({
+    client_id     = string
+    client_secret = string
+    auth_url      = string
+    token_url     = string
+    api_url       = string
+    name          = optional(string, "Authentik")
+  })
+  sensitive = true
+  default   = null
+}

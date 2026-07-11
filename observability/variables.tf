@@ -10,3 +10,17 @@ variable "grafana_admin_password" {
   default   = ""
 }
 variable "environment" { type = string }
+
+variable "grafana_oidc_config" {
+  description = "Authentik OIDC config for Grafana. Passed to the grafana module."
+  type = object({
+    client_id     = string
+    client_secret = string
+    auth_url      = string
+    token_url     = string
+    api_url       = string
+    name          = optional(string, "Authentik")
+  })
+  sensitive = true
+  default   = null
+}
