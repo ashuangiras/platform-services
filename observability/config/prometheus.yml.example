@@ -1,0 +1,49 @@
+# prometheus.yml.example
+#
+# Copy to /srv/platform/prometheus/config/prometheus.yml on the host.
+# This file is NOT managed by Terraform — it is mounted read-only into the container.
+# After editing, trigger a hot reload with:
+#   curl -X POST http://localhost:9090/-/reload
+
+global:
+  scrape_interval:     15s
+  evaluation_interval: 15s
+
+scrape_configs:
+
+  # Prometheus self-monitoring
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # HashiCorp Vault metrics (requires telemetry block in vault.hcl)
+  - job_name: 'vault'
+    metrics_path: /v1/sys/metrics
+    params:
+      format: ['prometheus']
+    scheme: http
+    static_configs:
+      - targets: ['platform-vault:8200']
+    # Vault requires a Vault token for metrics access
+    # bearer_token: <vault-metrics-token>  # inject from Vault
+
+  # HashiCorp Consul metrics
+  - job_name: 'consul'
+    metrics_path: /v1/agent/metrics
+    params:
+      format: ['prometheus']
+    scheme: http
+    static_configs:
+      - targets: ['platform-consul:8500']
+
+  # MinIO metrics
+  - job_name: 'minio'
+    metrics_path: /minio/v2/metrics/cluster
+    scheme: http
+    static_configs:
+      - targets: ['platform-minio:9000']
+
+  # Grafana self-monitoring
+  - job_name: 'grafana'
+    static_configs:
+      - targets: ['platform-grafana:3000']

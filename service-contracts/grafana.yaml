@@ -1,0 +1,56 @@
+schema_version: "1.0.0"
+
+# Service Contract — Grafana
+# Governed by platform-compliance; PROF-SERVICE-V1
+# Required by CAT-001: every service must be registered with a service contract.
+
+service:
+  id: grafana
+  name: Grafana
+  version: "11.3.0"
+  description: >
+    Platform metrics visualisation and dashboarding layer. Connects to Prometheus
+    as its default data source to provide dashboards for all platform services,
+    operator-facing SLO burn-rate tracking, and alerting rule management.
+  owner: platform-team
+  repository: https://github.com/ashuangiras/platform-services
+  component: observability
+
+runtime:
+  type: docker-container
+  image: grafana/grafana:11.3.0
+  network: platform-backend
+  runs_as_non_root: true    # UID 472 (grafana)
+  read_only_rootfs: false   # Grafana writes dashboards to /var/lib/grafana
+
+health:
+  # OBS-001: service must expose a health check endpoint
+  endpoint: "/api/health"
+  port: 3000
+  method: GET
+  expected_status: 200
+  interval: 30s
+
+dependencies:
+  # CAT-002: service dependencies must be declared
+  - service: prometheus
+    type: required
+    purpose: "Default Prometheus data source for all dashboards and alerting"
+  - service: platform-vault
+    type: optional
+    purpose: "Admin password injection and datasource credential management"
+
+ports:
+  - port: 3000
+    protocol: http
+    purpose: "Grafana web UI and API"
+
+data:
+  persistent_storage: true
+  data_path: "/srv/platform/grafana/data"
+  backup_required: true    # Dashboards and user settings are not regeneratable
+  sensitivity: medium      # Admin credentials stored in SQLite; protect with filesystem permissions
+
+slo:
+  availability_target: 99.0%
+  note: "SLO formal definition deferred to PC-0157 (REL-001 activation)"
