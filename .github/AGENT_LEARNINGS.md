@@ -6,6 +6,19 @@ Add a new dated entry at the top for each change.
 
 ---
 
+## 2026-07-11 — chore: migrate to platform-compliance v4.0.0 (CHG-20260711-057)
+
+**Change Record:** CHG-20260711-057
+
+- **Compliance ref**: bumped `reusable-compliance.yml@v3.3.4` → `@v4.0.0` and `platform-compliance-ref` → `v4.0.0` in `compliance.yml`. v4.0.0 promotes AGT-001..015 to `block` on the merge gate for agent-context repos, adds CAT-003 (manifest completeness), and expands the profile `inherits` chain so SEC-004 is enforced via PROF-BASE.
+- **AGT-012**: added explicit Build/test, Conventions/architecture, and Safety sections to `copilot-instructions.md` — the completeness check requires all three, with a literal `do not` in the safety section (a bolded `**not**` does not satisfy it).
+- **AGT-008**: verified the PreToolUse guard script is committed executable (mode 100755) so the hook is valid in a fresh CI checkout.
+- **CAT-003**: `.compliance-manifest.yaml` already declares the `agent` context, matching the on-disk agent surface — reconciled and passing.
+
+**Rule learned:** a MAJOR compliance bump can turn previously-informational agent controls into blocking ones; treat the ledger + PR readiness/retro sections as gate inputs, and never rely on incidental keyword substrings to satisfy instruction-completeness checks — add real, explicit sections.
+
+---
+
 ## 2026-07-11 — fix: resolve all policy failures (SEC-004, SEC-005, LIC-001, AGT-008/010/013, SUP-004)
 
 **Change Record:** CHG-20260711-047
