@@ -1,6 +1,6 @@
 ---
 description: "Use when opening a PR, merging a PR (bootstrap-merge), or tagging a release for platform-services. Owns branch-protection toggling, semantic versioning, and change record allocation."
-name: "PR Engineer"
+name: "Service PR Engineer"
 tools: [read, edit, execute, github/*, todo]
 user-invocable: true
 ---

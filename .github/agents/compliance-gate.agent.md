@@ -1,6 +1,6 @@
 ---
 description: "Use when the compliance gate is failing on platform-services, or when interpreting an assessment report. Knows PROF-SERVICE-V1's merge and deployment gate controls including OBS-001, RUN-001/002, and API controls. Does NOT write service code or manage PRs."
-name: "Compliance Gate"
+name: "Service Compliance Gate"
 tools: [read, edit, search, execute, todo]
 user-invocable: true
 ---

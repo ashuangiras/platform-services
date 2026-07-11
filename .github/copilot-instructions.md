@@ -3,7 +3,7 @@
 `platform-services` is a governed repository. All compliance rules come from the mother repo:
 
 > **[platform-compliance](https://github.com/ashuangiras/platform-compliance)**  
-> Profile: **`PROF-SERVICE-V1`** | Compliance ref: **`v3.3.3`**  
+> Profile: **`PROF-SERVICE-V1`** | Compliance ref: **`v4.0.0`**  
 > Profile definition: [04-profiles/PROF-SERVICE-V1.yaml](https://github.com/ashuangiras/platform-compliance/blob/main/04-profiles/PROF-SERVICE-V1.yaml)
 
 Do **not** add governance objects (controls, policies, bindings) here — all governance changes go to platform-compliance.
@@ -44,3 +44,28 @@ forge validate <file> --compliance-dir /path/to/platform-compliance
 forge check all  --compliance-dir /path/to/platform-compliance
 forge gate merge --compliance-dir /path/to/platform-compliance
 ```
+
+## Build, test & validation
+
+Before opening a PR, run the local checks for whatever you touched:
+
+- **Terraform:** `terraform fmt -recursive`, `terraform init -backend=false`, then `terraform validate`.
+- **Compliance:** `forge validate <file>` and `forge gate merge` against a local platform-compliance checkout.
+- **Lint / SAST:** the `sast.yml` workflow runs Semgrep — fix findings before merge; there is no separate compile step for this HCL-based service.
+- Every PR must build cleanly and pass the `Compliance: Merge Gate` check (jobs 1–7) before merge.
+
+## Conventions & architecture
+
+- **Repository map:** service configuration lives at the root (`main.tf`, `variables.tf`, `versions.tf`); observability and service-contract modules live under `observability/` and `service-contracts/`.
+- Follow the platform naming conventions and keep the architecture and directory structure consistent with sibling service repos; reuse the established patterns and guidelines rather than inventing new ones.
+- Governance objects (controls, policies, bindings) are authored only in platform-compliance, never here.
+
+## Safety
+
+Take local, reversible actions freely. For irreversible or destructive operations, stop and confirm with a human first. Specifically, do not:
+
+- do not force-push, `git reset --hard`, `rm -rf`, or bypass hooks with `--no-verify`;
+- do not delete branches or tags, or rewrite published history;
+- do not commit secrets, tokens, or credentials — keep every secret out of the repository.
+
+These operations are destructive and often irreversible; the PreToolUse safety hook in `.github/hooks/` guards them. Safety and secret hygiene take priority over speed.

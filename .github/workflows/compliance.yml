@@ -16,7 +16,7 @@ permissions: read-all
 jobs:
   merge-gate:
     name: "Compliance: Merge Gate"
-    uses: ashuangiras/platform-compliance/.github/workflows/reusable-compliance.yml@v3.3.4
+    uses: ashuangiras/platform-compliance/.github/workflows/reusable-compliance.yml@v4.0.0
     secrets: inherit
     permissions:
       contents: read
@@ -28,4 +28,4 @@ jobs:
       repository-type: service
       technology-contexts: "github,github-actions,agent"
       has-container-images: false
-      platform-compliance-ref: v3.3.4
+      platform-compliance-ref: v4.0.0
