@@ -1,0 +1,43 @@
+name: "SAST — Semgrep (SEC-005)"
+
+# Static application security testing via Semgrep.
+# Scans Terraform (HCL) and any future application code for security issues.
+# SEC-005: at least one recognised SAST tool must run in the CI pipeline.
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  schedule:
+    # Weekly full scan on the default branch (catches new rules against existing code)
+    - cron: "0 3 * * 1"
+
+permissions: read-all
+
+jobs:
+  semgrep:
+    name: "SEC-005 — Semgrep SAST scan"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write   # required for uploading SARIF results
+
+    container:
+      image: semgrep/semgrep
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run Semgrep
+        run: semgrep scan --config=p/terraform --sarif --output=semgrep.sarif . || true
+        env:
+          SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
+
+      - name: Upload SARIF results
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: semgrep.sarif
+        continue-on-error: true

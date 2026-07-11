@@ -1,0 +1,36 @@
+name: "Release — SBOM + Release (SUP-004)"
+
+# Triggered on version tags (v*.*.*).
+# Generates a CycloneDX SBOM from the repository and attaches it to the GitHub release.
+# SUP-004: SBOM must be generated for every release artifact.
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+permissions: read-all
+
+jobs:
+  release:
+    name: "Create release with SBOM"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write    # required to create and upload release assets
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Generate SBOM (CycloneDX)
+        uses: anchore/sbom-action@v0
+        with:
+          format: cyclonedx-json
+          output-file: sbom.cdx.json
+          artifact-name: sbom.cdx.json
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: sbom.cdx.json
+          generate_release_notes: true
