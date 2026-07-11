@@ -1,0 +1,31 @@
+name: "Compliance: Merge Gate"
+
+# Runs the platform-compliance governance pipeline on every PR and push.
+# Calls the reusable workflow from platform-compliance pinned to v3.3.3.
+# Required for branch protection — the "Compliance: Merge Gate" status check must pass.
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+# Read-only at workflow level; write permissions scoped to the called workflow's jobs.
+permissions: read-all
+
+jobs:
+  merge-gate:
+    name: "Compliance: Merge Gate"
+    uses: ashuangiras/platform-compliance/.github/workflows/reusable-compliance.yml@v3.3.3
+    secrets: inherit
+    permissions:
+      contents: read
+      pull-requests: write
+      statuses: write
+    with:
+      gate: merge_gate
+      profile-id: PROF-SERVICE-V1
+      repository-type: service
+      technology-contexts: "github,github-actions,agent"
+      has-container-images: false
+      platform-compliance-ref: v3.3.3
