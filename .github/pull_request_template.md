@@ -1,6 +1,6 @@
 <!--
   Pull request template for platform-services.
-  Governed by platform-compliance v4.0.0, profile PROF-SERVICE-V1.
+  Governed by platform-compliance v4.0.3, profile PROF-SERVICE-V1.
 -->
 
 ## Summary
