@@ -1,0 +1,7 @@
+compliance_ref: "v3.3.3"
+profile: "PROF-SERVICE-V1"
+repo_type: "service"
+technology_contexts:
+  - github
+  - github-actions
+  - agent
