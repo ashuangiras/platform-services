@@ -3,7 +3,7 @@
 `platform-services` is a governed repository. All compliance rules come from the mother repo:
 
 > **[platform-compliance](https://github.com/ashuangiras/platform-compliance)**  
-> Profile: **`PROF-SERVICE-V1`** | Compliance ref: **`v4.0.0`**  
+> Profile: **`PROF-SERVICE-V1`** | Compliance ref: **`v4.0.3`**  
 > Profile definition: [04-profiles/PROF-SERVICE-V1.yaml](https://github.com/ashuangiras/platform-compliance/blob/main/04-profiles/PROF-SERVICE-V1.yaml)
 
 Do **not** add governance objects (controls, policies, bindings) here — all governance changes go to platform-compliance.

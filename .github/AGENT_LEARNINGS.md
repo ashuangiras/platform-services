@@ -6,6 +6,19 @@ Add a new dated entry at the top for each change.
 
 ---
 
+## 2026-07-12 — chore: bump platform-compliance ref v4.0.0 → v4.0.3 (CHG-20260712-001)
+
+**Change Record:** CHG-20260712-001
+
+- **Compliance ref**: bumped the pinned governance ref from `v4.0.0` → `v4.0.3` in four places — the two pins in `compliance.yml` (`reusable-compliance.yml@v4.0.3` and `platform-compliance-ref: v4.0.3`), `compliance_ref` in `.forge.yaml`, the `PROF-SERVICE-V1` compliance-ref line in `copilot-instructions.md`, and the governance header in the PR template.
+- **What v4.0.3 changes**: it is a PATCH release that makes **SEC-001** (secret-scanning) and **SUP-001** (supply-chain) genuinely **BLOCK** on the merge gate — previously they were silently inert (evaluated to `not_applicable` / no-op) — and fixes a **SUP-001** Terraform false-positive.
+- **Applicability for this repo**: `platform-services` declares contexts `github`, `github-actions`, `agent` and has **no** terraform context, so the SUP-001 variant that now applies here is the **GitHub-Actions action-pinning** check, not the Terraform-provider variant. The Terraform false-positive fix is irrelevant to this repo but harmless.
+- **No manifest / container changes**: `has-container-images: false` (compliance.yml) and `has_container_images: false` (`.compliance-manifest.yaml`) are unchanged; `technology-contexts: "github,github-actions,agent"` is unchanged. Vendored `.terraform/` module copies (pinned v3.3.2) are gitignored and out of scope.
+
+**Rule learned:** a PATCH bump can flip previously-inert controls (SEC-001, SUP-001) from silently passing to hard-blocking. After such a bump, do not assume the gate is still green — verify a genuine local green first (secret scanning enabled on the repo, all GitHub-Actions `uses:` pinned to full-length SHAs) before merge, because the ref change alone can newly fail the gate.
+
+---
+
 ## 2026-07-11 — chore: migrate to platform-compliance v4.0.0 (CHG-20260711-057)
 
 **Change Record:** CHG-20260711-057
